@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Round Robin Scheduler Pro</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-icon">RR</span><div><strong>Schedulr</strong><small>CPU LAB / SIMULATOR</small></div></div>
+      <div class="nav-label">WORKSPACE</div>
+      <a class="nav active" href="#dashboard">▦ <span>Dashboard</span></a>
+      <a class="nav" href="#processes">▤ <span>Process Manager</span></a>
+      <a class="nav" href="#results">◷ <span>Analytics & Results</span></a>
+      <a class="nav nav-sub" href="#performanceMetrics">↳ <span>Performance Metrics</span></a>
+      <div class="sidebar-note"><span class="status-dot"></span> Round Robin engine <b>Ready</b><small>Scheduling algorithm · v1.0</small></div>
+    </aside>
+    <main>
+      <header class="topbar" id="dashboard"><div><div class="eyebrow">OPERATING SYSTEMS / LAB PROJECT</div><h1>Round Robin Scheduler Pro</h1><p>Automatic app detection, interactive scheduling and performance analytics.</p></div><button id="sampleBtn" class="btn btn-light">↻ Load demo data</button></header>
+      <section class="stats">
+        <article class="stat"><div class="stat-label">TOTAL PROCESSES <span>▤</span></div><div id="statProcesses" class="stat-number">—</div><small>Processes in current run</small></article>
+        <article class="stat"><div class="stat-label">TIME QUANTUM <span>◷</span></div><div id="statQuantum" class="stat-number">—</div><small>Time units per turn</small></article>
+        <article class="stat"><div class="stat-label">CPU UTILIZATION <span>▥</span></div><div id="statCpu" class="stat-number">—</div><small>Busy time / elapsed time</small></article>
+        <article class="stat"><div class="stat-label">CONTEXT SWITCHES <span>⇄</span></div><div id="statSwitches" class="stat-number">—</div><small>Between consecutive processes</small></article>
+      </section>
+      <section class="panel" id="liveProcesses">
+        <div class="panel-heading"><div><h2>Live Windows Processes</h2><p>Automatically detects visible Windows applications and syncs them into the scheduler. Updates every 3 seconds.</p></div><button id="refreshLiveBtn" class="btn btn-light">↻ Refresh now</button></div>
+        <div class="live-note">Live process names and runtime are read from Windows. Visible application windows are detected automatically—no checkbox selection. CPU time and RAM are live Windows readings. Burst time is a simulation value; this tool does not control Windows scheduling.</div>
+        <div class="live-filter-row"><label for="liveSearch">Filter detected apps</label><input id="liveSearch" type="search" placeholder="Search app name or PID…"><span>Auto-added apps appear below.</span></div>
+        <p id="liveStatus" class="live-status">Connecting to Windows process monitor…</p>
+        <div id="liveProcessList" class="live-process-list"></div>
+        <div class="live-actions"><span class="live-note">Detected apps are added automatically. Adjust Arrival/Burst Time below before running.</span><button id="refreshLiveBtn2" class="btn btn-light" type="button">↻ Sync now</button></div>
+      </section>
+      <section class="panel" id="processes">
+        <div class="panel-heading"><div><h2>Process configuration</h2><p>Add processes and set their arrival and burst times.</p></div><button id="addBtn" class="btn btn-light">＋ Add manual process</button></div>
+        <div class="quantum-row"><label for="quantum">Time quantum</label><input id="quantum" type="number" min="1" step="1" value="2"><span>Must be a positive integer</span></div>
+        <div class="table-wrap"><table><thead><tr><th>PROCESS / APP NAME</th><th>ARRIVAL TIME</th><th>BURST TIME</th><th></th></tr></thead><tbody id="processRows"></tbody></table></div>
+        <div class="panel-footer"><span id="processCount">4 processes configured</span><div><button id="resetBtn" class="btn btn-light">Reset</button><button id="runBtn" class="btn btn-primary">▶ Run simulation</button></div></div>
+        <p id="error" class="error" role="alert"></p>
+      </section>
+      <section class="panel" id="results">
+        <div class="panel-heading"><div><h2>Execution timeline</h2><p>Each block shows the process running during that time slice.</p></div><span id="timelineTotal" class="pill">Run simulation to view</span></div>
+        <div id="timelineViewport" class="timeline-viewport"><div id="gantt" class="gantt-empty">Your Gantt chart will appear here after you run the simulation.</div><div id="timeAxis" class="time-axis"></div></div>
+      </section>
+      <section class="charts-grid" id="chartsPanel">
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><h2>Process Time Comparison</h2><p>Waiting, turnaround and response time for each process.</p></div><button id="downloadComparisonBtn" class="btn btn-light" disabled>↓ Download graph</button></div>
+          <div class="chart-legend"><span><i class="legend-dot wt"></i>Waiting Time</span><span><i class="legend-dot tat"></i>Turnaround Time</span><span><i class="legend-dot rt"></i>Response Time</span></div>
+          <div class="chart-subheading"><h3>Time comparison bars</h3><span>Exact values by process</span></div>
+          <div id="metricsChart" class="metrics-chart"><p class="chart-placeholder">Run simulation to display the graph.</p></div>
+          <div class="chart-subheading histogram-heading"><div><h3>Grouped histogram</h3><span>Waiting · Turnaround · Response</span></div><button id="downloadHistogramBtn" class="btn btn-light" disabled>↓ Download histogram</button></div>
+          <div id="histogramChart" class="histogram-chart"><p class="chart-placeholder">Run simulation to display the histogram.</p></div>
+        </article>
+        <article class="panel chart-panel">
+          <div class="panel-heading"><div><h2>Average Performance</h2><p>Compare the three average metrics.</p></div><button id="downloadAverageBtn" class="btn btn-light" disabled>↓ Download graph</button></div>
+          <div id="averageChart" class="average-chart"><p class="chart-placeholder">Run simulation to display the graph.</p></div>
+        </article>
+      </section>
+      <section class="panel" id="performanceMetrics">
+        <div class="panel-heading"><div><h2>Performance metrics</h2><p>Calculated from completion and first-start times.</p></div><button id="csvBtn" class="btn btn-light" disabled>↓ Export CSV</button></div>
+        <div class="table-wrap"><table><thead><tr><th>PROCESS</th><th>AT</th><th>BT</th><th>CT</th><th>TAT</th><th>WT</th><th>RT</th></tr></thead><tbody id="resultRows"><tr><td colspan="7" class="empty-cell">No results yet. Run the simulation first.</td></tr></tbody></table></div>
+        <div class="formula-panel"><h3>Scheduling formulas</h3><div class="formula-grid"><div><strong>AT</strong><span>Arrival Time — process enters ready queue</span></div><div><strong>BT</strong><span>Burst Time — total CPU time needed in simulation</span></div><div><strong>CT</strong><span>Completion Time — time process finishes</span></div><div><strong>TAT</strong><span>Turnaround Time = CT − AT</span></div><div><strong>WT</strong><span>Waiting Time = TAT − BT</span></div><div><strong>RT</strong><span>Response Time = First Start Time − AT</span></div></div></div>
+        <div class="averages"><div><span>Avg. waiting time</span><strong id="avgWt">—</strong></div><div><span>Avg. turnaround time</span><strong id="avgTat">—</strong></div><div><span>Avg. response time</span><strong id="avgRt">—</strong></div></div>
+      </section>
+      <footer>Round Robin CPU Scheduler · C algorithm modules + Node.js API + HTML/CSS/JavaScript UI</footer>
+    </main>
+  </div>
+  <script src="/js/script.js"></script>
+</body>
+</html>
